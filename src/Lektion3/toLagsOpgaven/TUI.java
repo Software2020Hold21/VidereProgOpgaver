@@ -1,8 +1,8 @@
-package Lektion2.toLagsOpgaven;
+package Lektion3.toLagsOpgaven;
 
 import java.util.Scanner;
 
-public class TUI implements IUI{
+public class TUI implements IUI {
     private IData data;
     private Scanner scan = new Scanner(System.in);
 
@@ -48,7 +48,7 @@ public class TUI implements IUI{
     }
 
     @Override
-    public void changeIngredient() {
+    public void changeIngredient() throws IngredientNotFoundException{
         System.out.println("Indtast id på den ønskede ingrediens");
         int selectedId = scan.nextInt();
         System.out.println("Hvad ønsker du at ændre?\n1. Navn \n2. Mængde");
