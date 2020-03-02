@@ -1,5 +1,6 @@
 package Lektion3.toLagsOpgaven;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TUI implements IUI {
@@ -43,24 +44,36 @@ public class TUI implements IUI {
     @Override
     public void showIngredient() {
         System.out.println("Indtast id på den ønskede ingrediens");
-        int selectedId = scan.nextInt();
-        System.out.println("Navn: " + data.getIngredientName(selectedId) + "\nMængde: " + data.getIngredientAmount(selectedId));
+        int selectedId = getUserInt();
+        try {
+            System.out.println("Navn: " + data.getIngredientName(selectedId) + "\nMængde: " + data.getIngredientAmount(selectedId));
+        } catch (IngredientNotFoundException e) {
+            System.out.println("Der er ingen ingrediens med det indtastede ID.");
+        }
     }
 
     @Override
-    public void changeIngredient() throws IngredientNotFoundException{
+    public void changeIngredient() {
         System.out.println("Indtast id på den ønskede ingrediens");
-        int selectedId = scan.nextInt();
+        int selectedId = getUserInt();
         System.out.println("Hvad ønsker du at ændre?\n1. Navn \n2. Mængde");
         int selectedAttribute = scan.nextInt();
         switch (selectedAttribute){
             case 1:
                 System.out.println("Hvad ønsker du at ændre navnet til?");
-                data.setIngredientName(selectedId,scan.next());
+                try {
+                    data.setIngredientName(selectedId,scan.next());
+                } catch (IngredientNotFoundException e){
+                    System.out.println("Der findes ingen ingrediens i databasen med det ID.");
+                }
                 break;
             case 2:
                 System.out.println("Hvad ønsker du at ændre mængden til?");
-                data.setIngredientAmount(selectedId,scan.nextInt());
+                try {
+                    data.setIngredientAmount(selectedId,scan.nextInt());
+                } catch (IngredientNotFoundException e){
+                    System.out.println("Der findes ingen ingrediens i databasen med det ID.");
+                }
                 break;
         }
 
@@ -71,12 +84,23 @@ public class TUI implements IUI {
         System.out.println("Indtast det navn, du vil oprette ingrediensen med");
         String name = scan.next();
         System.out.println("Indtast mængden af ingrediensen.");
-        int amount = scan.nextInt();
+        int amount = getUserInt();
         System.out.println("Indtast ønsket id for ingrediensen.");
-        int id = scan.nextInt();
+        int id = getUserInt();
 
         data.createIngredient(id,name,amount);
-
-
     }
+
+    public int getUserInt(){
+        Scanner scan = new Scanner(System.in);
+        while(true){
+            try{
+                return scan.nextInt();
+            } catch (InputMismatchException e){
+                System.out.println("Inputtet skal være et heltal - Prøv igen.");
+                return getUserInt();
+            }
+        }
+    }
+
 }
